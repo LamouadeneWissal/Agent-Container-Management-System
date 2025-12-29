@@ -1,0 +1,267 @@
+@startuml Diagramme_Classes_Gestion_Conteneurs_Agents
+
+' Configuration du style
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 60
+
+' ==================== ENUMS ====================
+enum TransactionType {
+    VENTE
+    ACHAT
+    +getLabel(): String
+}
+
+' ==================== MODEL ====================
+class Transaction {
+    -id: String
+    -date: LocalDateTime
+    -montant: double
+    -type: TransactionType
+    --
+    +builder(): TransactionBuilder
+    +afficher(): void
+    +getId(): String
+    +getDate(): LocalDateTime
+    +getMontant(): double
+    +getType(): TransactionType
+}
+
+class TransactionBuilder <<Builder>> {
+    -id: String
+    -date: LocalDateTime
+    -montant: double
+    -type: TransactionType
+    --
+    +id(String): TransactionBuilder
+    +date(LocalDateTime): TransactionBuilder
+    +montant(double): TransactionBuilder
+    +type(TransactionType): TransactionBuilder
+    +build(): Transaction
+}
+
+' ==================== OBSERVER PATTERN ====================
+interface Observer <<Observer>> {
+    +update(NotificationEvent): void
+}
+
+interface Subject <<Observable>> {
+    +subscribe(Observer): void
+    +unsubscribe(Observer): void
+    +notifyObservers(NotificationEvent): void
+}
+
+class NotificationEvent {
+    -agentName: String
+    -transaction: Transaction
+    +getAgentName(): String
+    +getTransaction(): Transaction
+}
+
+' ==================== STRATEGY PATTERN ====================
+interface NotificationStrategy <<Strategy>> {
+    +handleNotification(NotificationEvent): void
+    +getStrategyName(): String
+}
+
+class DefaultStrategy implements NotificationStrategy {
+    +handleNotification(NotificationEvent): void
+    +getStrategyName(): String
+}
+
+class ScoringStrategy implements NotificationStrategy {
+    -solde: double
+    +handleNotification(NotificationEvent): void
+    +getStrategyName(): String
+    +getSolde(): double
+    +resetSolde(): void
+}
+
+class HistoryStrategy implements NotificationStrategy {
+    -historique: List<NotificationEvent>
+    +handleNotification(NotificationEvent): void
+    +getStrategyName(): String
+    +getHistorique(): List<NotificationEvent>
+    +displayHistory(): void
+}
+
+class StatisticsStrategy implements NotificationStrategy {
+    -totalVentes: int
+    -totalAchats: int
+    -montantTotalVentes: double
+    -montantTotalAchats: double
+    +handleNotification(NotificationEvent): void
+    +getStrategyName(): String
+    +displayFullStatistics(): void
+}
+
+class LoggingStrategy implements NotificationStrategy {
+    +handleNotification(NotificationEvent): void
+    +getStrategyName(): String
+}
+
+' ==================== AGENT ====================
+class Agent implements Subject, Observer {
+    -nom: String
+    -transactions: List<Transaction>
+    -observers: List<Observer>
+    -strategy: NotificationStrategy
+    --
+    +Agent(String)
+    +ajouterTransaction(Transaction): void
+    +supprimerTransaction(String): boolean
+    +rechercherTransaction(String): Optional<Transaction>
+    +getTransactionMaxMontant(): Optional<Transaction>
+    +calculerSolde(): double
+    +subscribe(Observer): void
+    +unsubscribe(Observer): void
+    +notifyObservers(NotificationEvent): void
+    +update(NotificationEvent): void
+    +changerStrategie(NotificationStrategy): void
+    +afficher(): void
+}
+
+' ==================== ADAPTER PATTERN ====================
+interface HDMIDisplay <<Interface>> {
+    +displayViaHDMI(String): void
+    +getDisplayName(): String
+}
+
+interface VGADisplay <<Interface>> {
+    +displayViaVGA(String): void
+    +setResolution(int, int): void
+}
+
+class HDMIMonitor implements HDMIDisplay {
+    +displayViaHDMI(String): void
+    +getDisplayName(): String
+}
+
+class VGAMonitor implements VGADisplay {
+    -width: int
+    -height: int
+    +displayViaVGA(String): void
+    +setResolution(int, int): void
+}
+
+class VGAToHDMIAdapter <<Adapter>> implements HDMIDisplay {
+    -vgaDisplay: VGADisplay
+    +displayViaHDMI(String): void
+    +getDisplayName(): String
+    +configureVGAResolution(int, int): void
+}
+
+' ==================== SINGLETON PATTERN ====================
+class AgentContainer <<Singleton>> {
+    -{static} instance: AgentContainer
+    -agents: HashMap<String, Agent>
+    -display: HDMIDisplay
+    --
+    -AgentContainer()
+    +{static} getInstance(): AgentContainer
+    +{static} resetInstance(): void
+    +ajouterAgent(Agent): boolean
+    +supprimerAgent(String): Optional<Agent>
+    +rechercherAgent(String): Optional<Agent>
+    +contientAgent(String): boolean
+    +getTousLesAgents(): Collection<Agent>
+    +getNombreAgents(): int
+    +vider(): void
+    +connecterAfficheur(HDMIDisplay): void
+    +afficherEtat(): void
+    +afficherAgent(String): void
+}
+
+' ==================== AOP ANNOTATIONS ====================
+annotation Log {
+    message(): String
+    level(): String
+}
+
+annotation Cachable {
+    key(): String
+    ttl(): long
+}
+
+annotation SecuredBy {
+    roles(): String[]
+}
+
+' ==================== ASPECTS ====================
+class LoggingAspect <<Aspect>> {
+    +logMethodExecution(ProceedingJoinPoint, Log): Object
+}
+
+class CachingAspect <<Aspect>> {
+    -cache: Map<String, CacheEntry>
+    +cacheMethodResult(ProceedingJoinPoint, Cachable): Object
+    +invalidate(String): void
+    +clearCache(): void
+}
+
+class SecurityAspect <<Aspect>> {
+    +checkSecurity(ProceedingJoinPoint, SecuredBy): Object
+}
+
+' ==================== SECURITY ====================
+class SecurityContext {
+    -{static} USERS: Map<String, UserCredentials>
+    -{static} currentUser: ThreadLocal<UserCredentials>
+    +{static} login(String, String): boolean
+    +{static} logout(): void
+    +{static} isAuthenticated(): boolean
+    +{static} getCurrentUsername(): String
+    +{static} getCurrentUserRoles(): Set<String>
+    +{static} hasRole(String): boolean
+}
+
+class SecurityException extends RuntimeException {
+    +SecurityException(String)
+}
+
+' ==================== RELATIONS ====================
+' Builder
+Transaction +-- TransactionBuilder
+Transaction --> TransactionType
+
+' Observer
+Agent "1" o-- "*" Observer : observers
+Agent --> NotificationEvent : creates
+NotificationEvent --> Transaction
+NotificationEvent --> "agentName" Agent
+
+' Strategy
+Agent --> NotificationStrategy : strategy
+DefaultStrategy --|> NotificationStrategy
+ScoringStrategy --|> NotificationStrategy
+HistoryStrategy --|> NotificationStrategy
+StatisticsStrategy --|> NotificationStrategy
+LoggingStrategy --|> NotificationStrategy
+
+' Adapter
+VGAToHDMIAdapter o-- VGADisplay
+AgentContainer --> HDMIDisplay : display
+
+' Singleton
+AgentContainer "1" o-- "*" Agent : agents
+
+' AOP
+LoggingAspect ..> Log : intercepts
+CachingAspect ..> Cachable : intercepts
+SecurityAspect ..> SecuredBy : intercepts
+SecurityAspect --> SecurityContext : uses
+SecurityAspect --> SecurityException : throws
+
+' Légende
+legend right
+  |= Symbole |= Signification |
+  | <<Builder>> | Pattern Builder |
+  | <<Observer>> | Pattern Observer |
+  | <<Strategy>> | Pattern Strategy |
+  | <<Singleton>> | Pattern Singleton |
+  | <<Adapter>> | Pattern Adapter |
+  | <<Aspect>> | Aspect AOP |
+endlegend
+
+@enduml
