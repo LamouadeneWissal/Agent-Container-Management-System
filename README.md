@@ -1,4 +1,4 @@
-# 🏗️ Agent Container Management System
+# Agent Container Management System
 
 <div align="center">
 
@@ -15,7 +15,7 @@
 
 ---
 
-## 📋 Overview
+##  Overview
 
 This project is a robust **Agent Container Management System** built with Spring Boot that showcases enterprise-level software architecture principles. It demonstrates the practical application of **5 Gang of Four (GoF) Design Patterns** combined with **Aspect-Oriented Programming** for cross-cutting concerns like logging, caching, and security.
 
@@ -27,7 +27,7 @@ The system manages agents that can:
 
 ---
 
-## ✨ Features
+##  Features
 
 ### Core Functionality
 - **Transaction Management** - Create, track, and manage financial transactions with the Builder pattern
@@ -43,7 +43,7 @@ The system manages agents that can:
 
 ---
 
-## 🎨 Design Patterns
+##  Design Patterns
 
 | Pattern | Purpose | Implementation |
 |---------|---------|----------------|
@@ -85,7 +85,7 @@ The system manages agents that can:
 
 ---
 
-## 🏛️ Architecture
+##  Architecture
 
 ### Project Structure
 
@@ -138,7 +138,7 @@ src/main/java/com/ex/gestion_conteneurs_agents/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -167,7 +167,7 @@ mvn spring-boot:run
 
 ---
 
-## 💡 Usage Examples
+##  Usage Examples
 
 ### Creating Transactions (Builder Pattern)
 
@@ -232,7 +232,7 @@ container.connecterAfficheur(new VGAToHDMIAdapter(new VGAMonitor()));
 
 ---
 
-## 🔐 Security
+##  Security
 
 The system implements role-based access control with predefined users:
 
@@ -277,7 +277,7 @@ mvn test jacoco:report
 
 ---
 
-## 📊 UML Class Diagram
+##  UML Class Diagram
 
 A complete PlantUML class diagram is available in [`docs/diagramme_classes.puml`](docs/diagramme_classes.puml)
 
@@ -288,7 +288,7 @@ To visualize:
 
 ---
 
-## 🎓 Educational Purpose
+##  Educational Purpose
 
 This project was developed as part of the **Design Patterns & Aspect-Oriented Programming** course for **3 GLSID** students. It demonstrates:
 
@@ -309,7 +309,7 @@ The project architecture supports adding:
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -321,13 +321,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👨‍🏫 Acknowledgments
+##  Acknowledgments
 
 - **Professor M. YOUSSFI** - Course instructor
 - **Gang of Four** - Design Patterns: Elements of Reusable Object-Oriented Software
