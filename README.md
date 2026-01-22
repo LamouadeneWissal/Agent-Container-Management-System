@@ -47,11 +47,11 @@ The system manages agents that can:
 
 | Pattern | Purpose | Implementation |
 |---------|---------|----------------|
-| **🔨 Builder** | Fluent object construction | `Transaction.builder().id().date().montant().type().build()` |
-| **👁️ Observer** | Event-driven agent communication | `Agent` implements `Subject` & `Observer` interfaces |
-| **🎯 Strategy** | Interchangeable algorithms | `NotificationStrategy` with 5 concrete implementations |
-| **🔒 Singleton** | Single container instance | `AgentContainer.getInstance()` with double-checked locking |
-| **🔌 Adapter** | Interface compatibility | `VGAToHDMIAdapter` bridges VGA displays to HDMI interface |
+| ** Builder** | Fluent object construction | `Transaction.builder().id().date().montant().type().build()` |
+| ** Observer** | Event-driven agent communication | `Agent` implements `Subject` & `Observer` interfaces |
+| ** Strategy** | Interchangeable algorithms | `NotificationStrategy` with 5 concrete implementations |
+| ** Singleton** | Single container instance | `AgentContainer.getInstance()` with double-checked locking |
+| ** Adapter** | Interface compatibility | `VGAToHDMIAdapter` bridges VGA displays to HDMI interface |
 
 ### Pattern Relationships
 
